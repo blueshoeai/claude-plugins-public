@@ -1,0 +1,18 @@
+{
+  "name": "blueshoe-matter-work",
+  "version": "0.3.0",
+  "description": "Work any matter from the Blueshoe record: start from the brief, chronology and findings; capture every email, document and deadline the work touches back into Blueshoe; follow standing rules on signing, drafting and engagement terms. Firm-agnostic.",
+  "author": {
+    "name": "Blueshoe"
+  },
+  "keywords": [
+    "legal",
+    "matter",
+    "blueshoe",
+    "litigation",
+    "deadlines",
+    "capture"
+  ],
+  "homepage": "https://github.com/blueshoeai/claude-plugins",
+  "repository": "https://github.com/blueshoeai/claude-plugins"
+}

@@ -1,0 +1,18 @@
+{
+  "name": "blueshoe",
+  "owner": { "name": "Blueshoe" },
+  "metadata": {
+    "description": "Plugins for firms that run matters in Blueshoe.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "blueshoe-matter-work",
+      "source": "./plugins/blueshoe-matter-work",
+      "description": "Work any matter from the Blueshoe record and capture every email, document and deadline back into it. Firm-agnostic.",
+      "version": "0.3.0",
+      "category": "legal",
+      "keywords": ["legal", "matter", "blueshoe", "litigation", "deadlines", "capture"]
+    }
+  ]
+}
