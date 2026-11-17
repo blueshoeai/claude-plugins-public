@@ -8,6 +8,10 @@ Teaches Claude to work a legal matter from the Blueshoe record and — above all
 - **capture-to-blueshoe** — the end-of-task checklist and the "is this in Blueshoe?" action. Inventories the session's emails, documents, deadlines and decisions; reconciles each against `correspondence_list`, `document_list`, `obligation_list`; files what is missing (documents as the real file plus a text extract; emails with attachments; deadlines with explicit time zones; a dated note for decisions and status); reports what could not be filed.
 - **matter-brief** — "brief me on X", "what's due this week on X": one-page sourced status from the record with finding ids.
 
+## Session export
+
+The capture skill ends by writing the session itself (summary and, where the client allows, the full transcript) to `files/sessions/` on the matter. That is the copy a person reads. For a complete, mechanical copy of every chat and session, a firm on Claude Enterprise should pull Anthropic's Compliance API into Blueshoe; the skill does not replace that.
+
 ## Connector
 
 The plugin bundles no connector configuration. It uses the Blueshoe connector the firm's admin has enabled org-wide, plus whatever mail connector is enabled (see CONNECTORS.md). No environment variables, no placeholders to fill in.
@@ -21,6 +25,10 @@ The plugin bundles no connector configuration. It uses the Blueshoe connector th
 ## Updating
 
 Edit the skills, bump `version` in `.claude-plugin/plugin.json`, merge to the default branch. Org-synced marketplaces pick it up on sync; Claude Code marketplaces with auto-update pick it up on next start.
+
+## Session export
+
+The capture skill ends by writing the session itself (summary and, where the client allows, the full transcript) to `files/sessions/` on the matter. That is the copy a person reads. For a complete, mechanical copy of every chat and session, a firm on Claude Enterprise should pull Anthropic's Compliance API into Blueshoe; the skill does not replace that.
 
 ## Connector limits the skills work around (Nov 2026)
 

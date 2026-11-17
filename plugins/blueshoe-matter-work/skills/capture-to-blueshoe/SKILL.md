@@ -1,6 +1,6 @@
 ---
 name: capture-to-blueshoe
-description: Use at the end of any task that touched a Blueshoe matter, and whenever the user says "file this to Blueshoe", "make sure Blueshoe has everything", "update the record", "sync the matter", or "is this in Blueshoe". Reconciles the session's emails, documents, deadlines and decisions against the matter and files whatever is missing.
+description: Use at the end of any task that touched a Blueshoe matter, and whenever the user says "file this to Blueshoe", "make sure Blueshoe has everything", "update the record", "sync the matter", or "is this in Blueshoe". Reconciles the session's emails, documents, deadlines and decisions against the matter, files whatever is missing, and exports the session itself (summary and transcript) to the matter. Also use when the user says "export this session" or "save this chat to Blueshoe".
 ---
 
 # Capture to Blueshoe
@@ -16,7 +16,7 @@ The record is only useful if it is complete. This skill makes sure that everythi
 
 ## Checklist
 
-Work through all five; report each as filed / already there / could not file.
+Work through all six; report each as filed / already there / could not file.
 
 ### 1. Inventory what this session touched
 
@@ -68,6 +68,25 @@ Blueshoe's mailbox capture files most matter email on its own: any message whose
 ### 5. Record decisions and status
 
 Write one dated note, `files/notes/<YYYY-MM-DD> <topic>.md`, with: instructions and decisions people gave this session (who, when, what); the status of anything in progress (what is filed, what is awaiting approval, what is blocked and on whom); known gaps in the record (documents referenced but not on file); and anything the next session must not repeat. Write the people's words, not a summary of them, where the wording matters.
+
+### 6. Export the session itself
+
+The work product above is what the matter needs. The session is what the firm needs: how the work was done, what was tried and rejected, what the person said in their own words. Export it to the matter at the end of every matter task, and again whenever the user says "export this session" or "save this chat to Blueshoe". One file per session; a later export in the same session replaces the earlier one with `document_replace`, so the file is always whole.
+
+Path: `files/sessions/<YYYY-MM-DD> <person> - <topic>.md`, where `<person>` is the user's name as the matter team lists it and `<topic>` is a few words for what the session was about.
+
+The file has three parts, in this order:
+
+1. **Header**: person, product (claude.ai chat, Cowork, Claude Code), matter id, session start and end in the user's time zone, and the client session id if the product shows one.
+2. **Summary**: what was asked; what was done; every artifact produced, sent, or filed, with its path on the matter or the email it went in; every decision or instruction the person gave, in their words; every item left open and who it is waiting on.
+3. **Transcript**: the conversation itself, as complete as the client allows.
+   - claude.ai chat and Cowork: if a tool that reads the current conversation is present (it is named `read_conversation` or similar and takes `"current"`), page through it from the beginning and reproduce every user and assistant turn, with each tool call on one line (`→ Blueshoe.execute obligation_record …`) and its result in one line. Do not reproduce long tool results in full; name the file or record they produced instead.
+   - Claude Code: the transcript is a JSONL file under `~/.claude/projects/<cwd-slug>/<session-id>.jsonl`. Read it and render it the same way. If the file cannot be found, say so in the header and export the summary alone.
+   - If neither route is available, export the summary alone and say in the header that the transcript was not captured, so the firm's compliance export (see below) is known to be the only copy.
+
+Rules: redact nothing except credentials, one-time codes, and bank or card numbers, which are replaced with `[redacted]`. Never alter what a person said. Mark the file `CONFIDENTIAL - attorney work product` on the first line. Compaction summaries from the client count as transcript; label them as such.
+
+This step is advisory: it depends on the session reaching it. A firm on Claude Enterprise should also be pulling every chat and session mechanically through Anthropic's Compliance API (`/v1/compliance/apps/chats` and `/v1/compliance/apps/sessions/*`), which Blueshoe can ingest and attribute to matters by the `matter_id` in each connector call. The export here is the copy that exists even when that is not in place, and the summary is the part a person reads.
 
 ## Report
 

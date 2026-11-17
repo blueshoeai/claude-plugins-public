@@ -20,7 +20,7 @@ Before drafting, advising, or answering anything about a matter:
 5. `projection_get` with `gaps` and `contradictions.open` — what the record says is missing and where it disagrees with itself. Put these in front of the attorney; do not resolve them silently.
 6. `obligation_list({matter_id})` and `projection_get({matter_id, slug:'deadlines.upcoming'})` — what is due. Hand-entered deadlines may not appear in the projection; read the list.
 7. `document_list({matter_id})` and `correspondence_list({matter_id})` — what is actually on file. Read primary documents with `document_get` (text) or `document_revision_get` (a short-lived download URL for PDFs and Word files; fetch it with curl).
-8. Read any dated notes under `files/notes/` — that is where earlier sessions left standing rules, decisions, and status for this matter.
+8. Read any dated notes under `files/notes/` — that is where earlier sessions left standing rules, decisions, and status for this matter — and the summaries at the top of `files/sessions/`, which say what earlier sessions did and left open.
 
 Findings are for orientation and sourcing, never for authority: every fact in a filing traces to a document that has been read. When a finding is wrong, record it with `finding_feedback_file` in the attorney's own words, while the attorney is in the conversation.
 
@@ -32,6 +32,7 @@ Run the `capture-to-blueshoe` checklist at the end of every matter task. In shor
 - **Every email to or from the other side, the client, a court, or a tribunal** is filed with its attachments (`correspondence_file`, or by cc'ing the matter's intake address).
 - **Every deadline read from any document** is recorded with `obligation_record` the moment it is read, with the source quoted in `narrative`, `due_on` for all-day dates, and `due_at` with an explicit UTC offset plus `time_zone` for clock times.
 - **Rules, decisions, and status** the next session needs go in a dated note under `files/notes/`.
+- **The session itself** — summary and transcript — goes to `files/sessions/` (step 6 of the capture checklist).
 
 If urgency forces a step to be skipped, say so in the reply and finish it before the session ends.
 
