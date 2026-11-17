@@ -28,13 +28,16 @@ List, from the conversation itself:
 
 ### 2. Reconcile emails
 
-1. `correspondence_list({matter_id, limit:200})`, paging while `next_cursor` is set. Index by `thread_key`, `subject`, `from_addr`, `occurred_at`.
-2. For each email from the inventory, and for each thread in the user's mailbox that matches the matter's parties and counsel (search the mailbox by the party names, firm names, and domains from `matter_get` / `case_party_list`), check whether it is already there.
+Blueshoe's mailbox capture files most matter email on its own: any message whose counterpart it can match to the matter's client, from a captured mailbox, lands as a correspondence row with `captured: true`. Do not re-file what capture already has. The gaps to look for are specific: mail between the firm and opposing counsel that no captured mailbox was on (opposing counsel wrote to one attorney alone); mail sent from an attorney's address that is not the one on the matter team (check `matter_team_get` against the addresses people actually send from); large attachments; and anything routed to the mailroom as uncertain.
+
+1. `correspondence_list({matter_id, limit:200})`, paging while `next_cursor` is set. Index by `thread_key`, `subject`, `from_addr`, `occurred_at`. Note which rows are `captured: true`; that is the baseline.
+2. For each email from the inventory, and for each thread in the user's mailbox that matches the matter's parties and counsel (search the mailbox by the party names, firm names, and domains from `matter_get` / `case_party_list`), check whether it is already there. When a whole cluster is missing, say so in the report: it usually means a mailbox or an address is not captured, which is a firm-level fix, not a per-email one.
 3. File what is missing:
    - Preferred, when the user has approved it once in the session: forward the thread to the matter's Blueshoe intake address, so capture files it with attachments.
    - Otherwise fetch the raw RFC 5322 message from the mailbox and call `correspondence_file({matter_id, messages:[{raw: <base64>, provider_id}], source})`. Up to 25 per call; a message already on the record comes back `created:false`, so re-sending is safe.
    - A message too large for either route (very large attachments): file the attachments as documents under `files/correspondence/<date> <from> - <subject>/` and a short markdown note with the headers and body.
 4. Ask the user once per session for permission to forward; do not forward or send anything without it.
+5. For a matter whose client mail predates capture, or where a cluster of client mail is missing, `capture_backfill({matter_id, days})` re-reads the captured mailboxes and files what is missing (idempotent; client-counterpart mail only). The operation's own guidance is to ask the lawyer before running it; do that.
 
 ### 3. Reconcile documents
 

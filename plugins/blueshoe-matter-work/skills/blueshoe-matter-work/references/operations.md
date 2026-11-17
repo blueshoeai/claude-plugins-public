@@ -27,7 +27,8 @@ All calls go through the connector's `execute` tool: the body of an async functi
 | `document_create({matter_id, filename, content, content_type})` | Text/markdown only. Folder paths in `filename` work (`files/notes/...`). The response includes `place_key`. |
 | `place_file_upload_begin({place_key, path, content_type, sha256, size_bytes})` → PUT bytes to `url` → `place_file_upload_confirm(same args)` | Binary files (PDF, Word, images). URL is valid 15 minutes. |
 | `document_replace` | New revision of an existing path. |
-| `correspondence_file({matter_id, messages:[{raw (base64 RFC 5322), provider_id}]})` | File email with attachments; ≤25 per call, ≤~7 MB each. |
+| `correspondence_file({matter_id, messages:[{raw (base64 RFC 5322), provider_id}]})` | File email with attachments; ≤25 per call, ≤~7 MB each. Only for what mailbox capture missed. |
+| `capture_backfill({matter_id, days})` | Re-read captured mailboxes for this matter's client mail and file what is missing; idempotent. Ask the lawyer first. |
 | `obligation_record({items:[...]})` | Deadlines. `due_on` (date) or `due_at` with explicit offset + `time_zone`. Kinds: answer, deposition, discovery_cutoff, expert_disclosure, hearing, ime, mediation, records_due, service, sol, trial, wc_reassignment. |
 | `obligation_mark_met` | When satisfied. |
 | `case_date_record`, `matter_milestone_record` | Court dates; milestones. |
@@ -41,6 +42,7 @@ All calls go through the connector's `execute` tool: the body of an async functi
 - `memory_page_write` / playbook pages — run-bound; use a dated note under `files/notes/` instead.
 - Retract or supersede an obligation — record the correct entry with a narrative naming the wrong one.
 - `mail_search` / `mail_file` read the Blueshoe agent's own mailbox, not the user's Gmail.
+- Mailbox capture matches on the team member's address as listed on the matter (`matter_team_get`). An attorney who sends from a different address is effectively uncaptured; mail from opposing counsel to that attorney alone will not reach the record.
 
 ## Known defects to work around
 
